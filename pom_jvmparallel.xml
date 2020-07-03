@@ -257,10 +257,71 @@
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>2.4</version>
 			</plugin>
-	
+			
+			<!-- RUN EACH CUCUMBER FEATURE FILE AS A FORK -->
+    <plugin>
+      <groupId>com.github.temyers</groupId>
+      <artifactId>cucumber-jvm-parallel-plugin</artifactId>
+      <version>1.0.1</version>
+      <executions>
+        <execution>
+          <id>generateRunners</id>
+          <phase>generate-test-sources</phase>
+          <goals>
+        <goal>generateRunners</goal>
+          </goals>
+          <configuration>
+          <glue>
+          <package>stepDefinitions</package>
+          </glue>
+           <outputDirectory>src/test/java/autoGenerateRunner</outputDirectory>
+           <featuresDirectory>src/test/resources/features</featuresDirectory>
+           <cucumberOutputDir>${project.build.directory}/cucumber-parallel</cucumberOutputDir>
+           <plugins>
+								<plugin>
+									<!--The available options are junit, testng, html, pretty, json, 
+										usage and rerun -->
+									<name>json</name>
+									<extension>json</extension>
+									<!--Optional output directory. Overrides cucumberOutputDirectory. 
+										Usefull when different plugins create files with the same extension -->
+									<outputDirectory>${project.build.directory}/cucumber-parallel/json/</outputDirectory>
+								</plugin>
+							</plugins>
+           <tags>
+           <tag>"~@ignored"</tag>
+           </tags>
+           <strict>true</strict>
+           <monochrome>true</monochrome> 
+           <useTestNG>false</useTestNG>
+           <namingScheme>simple</namingScheme>
+           <namingPattern>Parallel{c}IT</namingPattern>
+           <parallelScheme>FEATURE</parallelScheme>
+          </configuration>
+        </execution>
+      </executions>
+    </plugin>
+    
+    
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.21.0</version>
+				<configuration>
+				 <forkCount>3</forkCount>
+                 <reuseForks>true</reuseForks>
+				 <testFailureIgnore>true</testFailureIgnore>
+				 <includes>
+                        <include>**/Parallel*IT.java</include>
+                    </includes>
+					<!-- <suiteXmlFiles>
+						<suiteXmlFile>testng.xml</suiteXmlFile>
+					</suiteXmlFiles>
+ -->				</configuration>
+			</plugin>
 			
 			<!-- Running cucumber test in parallel -->
-			 <plugin>
+			<!-- <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.21.0</version>
@@ -273,12 +334,12 @@
                         <include>**/*Runner.java</include>
                     </includes>
                     <reportsDirectory>target/surefire-reports-${surefire.forkNumber}</reportsDirectory>
-					<!-- <suiteXmlFiles>
+					<suiteXmlFiles>
 						<suiteXmlFile>testng.xml</suiteXmlFile>
-					</suiteXmlFiles> -->
+					</suiteXmlFiles>
 				</configuration>
 			</plugin>
-			 
+			 -->
 			<plugin>
 				<groupId>net.masterthought</groupId>
 				<artifactId>maven-cucumber-reporting</artifactId>

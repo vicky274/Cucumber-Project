@@ -19,47 +19,6 @@
 	</properties>
 
 
-<profiles>
-
-        <profile>
-            <id>dev</id>
-            <activation>
-                <!-- this profile is active by default -->
-                <activeByDefault>true</activeByDefault>
-                <!-- activate if system properties 'env=dev' -->
-                <property>
-                    <name>env</name>
-                    <value>dev</value>
-                </property>
-            </activation>
-            <properties>
-                <db.driverClassName>com.mysql.jdbc.Driver</db.driverClassName>
-                <db.url>jdbc:mysql://localhost:3306/dev</db.url>
-                <db.username>mkyong</db.username>
-                <db.password>vignesh@2205</db.password>
-            </properties>
-        </profile>
-
-        <profile>
-            <id>prod</id>
-            <activation>
-                <!-- activate if system properties 'env=prod' -->
-                <property>
-                    <name>env</name>
-                    <value>prod</value>
-                </property>
-            </activation>
-            <properties>
-                <db.driverClassName>com.mysql.jdbc.Driver</db.driverClassName>
-                <db.url>jdbc:mysql://live01:3306/prod</db.url>
-                <db.username>mkyong</db.username>
-                <db.password>vicky2205</db.password>
-            </properties>
-        </profile>
-
-    </profiles>
-
- 
 
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/org.testng/testng -->
@@ -258,27 +217,17 @@
 				<version>2.4</version>
 			</plugin>
 	
-			
-			<!-- Running cucumber test in parallel -->
-			 <plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.21.0</version>
-				<configuration>
-				 <forkCount>3</forkCount>
-                 <reuseForks>true</reuseForks>
-                 <argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
-				 <testFailureIgnore>true</testFailureIgnore>
-				 <includes>
-                        <include>**/*Runner.java</include>
-                    </includes>
-                    <reportsDirectory>target/surefire-reports-${surefire.forkNumber}</reportsDirectory>
-					<!-- <suiteXmlFiles>
-						<suiteXmlFile>testng.xml</suiteXmlFile>
-					</suiteXmlFiles> -->
-				</configuration>
-			</plugin>
-			 
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-surefire-plugin</artifactId>
+    <version>2.22.0</version>
+    <configuration>
+        <parallel>methods</parallel>
+        <useUnlimitedThreads>true</useUnlimitedThreads>
+    </configuration>
+</plugin>
+
+	
 			<plugin>
 				<groupId>net.masterthought</groupId>
 				<artifactId>maven-cucumber-reporting</artifactId>
